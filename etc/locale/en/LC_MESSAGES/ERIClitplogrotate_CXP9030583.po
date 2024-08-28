@@ -1,0 +1,41 @@
+#This file contains the translations.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: ERIClitplogrotate_CXP9030583\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-23 19:08+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+msgid "CREATE_OWNER_REQ_CREATE_GROUP_ERR"
+msgstr "The \"create_owner\" property must be specified when a \"create_group\" property is defined"
+
+msgid "CREATE_MODE_REQ_CREATE_OWNER_ERR"
+msgstr "The \"create_mode\" property must be specified when a \"create_owner\" property is defined"
+
+msgid "CREATE_MODE_REQ_CREATE_ERR"
+msgstr "The \"create\" property must be specified when a \"create_mode\" property is defined"
+
+msgid "FIELD_NOT_UNIQUE_ERR"
+msgstr "The property \"%s\" with value \"%s\" must be unique per node"
+
+msgid "ONE_RULE_PER_NODE_ERR"
+msgstr "Only one \"logrotate-rule-config\" may be configured per node"
+
+msgid "CREATE_LOGROTATE_RULE"
+msgstr "Create logrotate rule \"%s\" on node \"%s\" "
+
+msgid "REMOVE_LOGROTATE_RULE"
+msgstr "Remove logrotate rule \"%s\" on node \"%s\" "
+
+msgid "UPDATE_LOGROTATE_RULE"
+msgstr "Update logrotate rule \"%s\" on node \"%s\""
+
+msgid "MAILFIRST_MAILLAST_ERR"
+msgstr "The properties \"mailfirst\" and \"maillast\" can not both be set to true"

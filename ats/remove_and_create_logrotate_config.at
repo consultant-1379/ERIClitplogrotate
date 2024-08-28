@@ -1,0 +1,12 @@
+litp create -t logrotate-rule-config -p /ms/configs/logging
+litp create -t logrotate-rule        -p /ms/configs/logging/rules/rule1 -o path="/my/path/value" name="hourly_log_rotate"
+litp create -t logrotate-rule        -p /ms/configs/logging/rules/rule2 -o path="/my/path/value1" name="hourly_log_rotates"
+litp create_plan
+
+assertConfigTask ms1 logrotate::rule ms_logging_rule1 /ms/configs/logging/rules/rule1 path='/my/path/value' name='hourly_log_rotate'
+litp run_plan
+
+litp remove -p /ms/configs/logging/rules/rule2 
+litp create_plan
+assertConfigTask ms1 logrotate::rule ms_logging_rule2 /ms/configs/logging/rules/rule2 path='/my/path/value1' ensure='absent' name='hourly_log_rotates'
+litp run_plan

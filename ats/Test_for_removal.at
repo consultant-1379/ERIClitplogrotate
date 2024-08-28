@@ -1,0 +1,14 @@
+#User not able to remove a rule with nameA in configA and create rule with nameA in configB
+litp create -t logrotate-rule-config -p /ms/configs/logrot1
+litp create -t logrotate-rule -p /ms/configs/logrot1/rules/rule1 -o name=mydemo path="/var/log/foo.log" missingok=true rotate_every=day
+litp create_plan
+litp run_plan 
+
+
+litp create -t logrotate-rule-config -p /ms/configs/logrot2 
+litp create -p /ms/configs/logrot2/rules/mqserverTest1 -t logrotate-rule -o path="/var/test/rabbitmqserver.log" name=mydemo size=1M rotate=5
+litp remove -p /ms/configs/logrot1
+assertError --err_type ValidationError   --err_message 'Create plan failed: The property "name" with value "mydemo" must be unique per node'  create_plan
+
+litp create -p /ms/configs/logrot2/rules/mqserverTest2 -t logrotate-rule -o path="/var/test/bunnymqserver.log" name=mydemo size=1M rotate=5
+assertError --err_type ValidationError   --err_message 'Create plan failed: The property "name" with value "mydemo" must be unique per node'  create_plan

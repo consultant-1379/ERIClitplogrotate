@@ -1,0 +1,13 @@
+litp create -t logrotate-rule-config -p /ms/configs/logging
+assertError create -t logrotate-rule        -p /ms/configs/logging/rules/rule1 -o path="/my/path/value" name="hourly_log_rotate" dateext="False"
+litp create -t logrotate-rule        -p /ms/configs/logging/rules/rule1 -o path="/my/path/value" name="hourly_log_rotate" mail="tester@test.com"
+litp create_plan
+assertConfigTask ms1 logrotate::rule ms_logging_rule1 /ms/configs/logging/rules/rule1 path='/my/path/value' name='hourly_log_rotate' mail='tester@test.com'
+litp run_plan
+
+assertState -p /ms/configs/logging/rules/rule1 Applied
+assertState -p /ms/configs/logging/rules Applied
+assertState -p /ms/configs/logging Applied
+
+litp create -t logrotate-rule-config -p /ms/configs/logging2
+litp create -t logrotate-rule        -p /ms/configs/logging2/rules/rule1 -o path="/my/path/value" name="hourly_log_rotate"

@@ -1,0 +1,159 @@
+#Verify cardinality of rules collection - the rules collection in logrotate-rule-config must have at least one element
+litp create -t logrotate-rule-config -p /ms/configs/logging
+
+let __err_1 --err_type 'CardinalityError' --err_message 'Create plan failed: This collection requires a minimum of 1 items not marked for removal' \
+--err_vpath "/ms/configs/logging/rules"
+assertError __err_1 create_plan
+
+#Verify that only one logrotate-rule-config can be created per node
+litp create -t logrotate-rule-config -p /ms/configs/logging1
+let __err_2 --err_type ValidationError --err_message 'Create plan failed: Only one "logrotate-rule-config" may be configured per node' \
+--err_vpath "/ms/configs/logging1"
+let __err_3 --err_type ValidationError --err_message 'Create plan failed: Only one "logrotate-rule-config" may be configured per node' \
+--err_vpath "/ms/configs/logging"
+let __err_4 --err_type CardinalityError --err_message 'Create plan failed: This collection requires a minimum of 1 items not marked for removal' \
+--err_vpath "/ms/configs/logging1/rules"
+assertError __err_1 __err_2 __err_3 __err_4 create_plan
+
+litp remove -p /ms/configs/logging1
+litp remove -p /ms/configs/logging
+
+#Negatively test validation for each property in logrotate-rule
+litp create -t logrotate-rule-config -p /ms/configs/logging
+
+assertError --err_type ValidationError --err_property compress --err_message "Invalid value 'True'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" compress="True"
+assertError --err_type ValidationError --err_property compresscmd --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" compresscmd=""
+assertError --err_type ValidationError --err_property compressext --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" compressext=""
+assertError --err_type ValidationError --err_property compressoptions --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" compressoptions=""
+assertError --err_type ValidationError --err_property copy --err_message "Invalid value '1'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" copy="1"
+assertError --err_type ValidationError --err_property copytruncate --err_message "Invalid value 'True'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" copytruncate="True"
+assertError --err_type ValidationError --err_property create --err_message "Invalid value 'whatever'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" create="whatever"
+assertError --err_type ValidationError --err_property dateext --err_message "Invalid value 'False'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" dateext="False"
+assertError --err_type ValidationError --err_property dateformat --err_message "Invalid value '20141021'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" dateformat="20141021"
+assertError --err_type ValidationError --err_property delaycompress --err_message "Invalid value 'TRUE'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" delaycompress="TRUE"
+assertError --err_type ValidationError --err_property extension --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" extension=""
+assertError --err_type ValidationError --err_property firstaction --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" firstaction=""
+assertError --err_type ValidationError --err_property ifempty --err_message "Invalid value 'null'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" ifempty="null"
+assertError --err_type ValidationError --err_property lastaction --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" lastaction=""
+assertError --err_type ValidationError --err_property mail --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" mail=""
+assertError --err_type ValidationError --err_property mailfirst --err_message "Invalid value 'wrong'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" mailfirst="wrong"
+assertError --err_type ValidationError --err_property maillast --err_message "Invalid value 'wrong_again'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" maillast="wrong_again"
+assertError --err_type ValidationError --err_property maxage --err_message "Invalid value 'one'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" maxage="one"
+assertError --err_type ValidationError --err_property minsize --err_message "Invalid value 'k'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" minsize="k"
+assertError --err_type ValidationError --err_property missingok --err_message "Invalid value '0'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" missingok="0"
+assertError --err_type ValidationError --err_property name --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name=""
+assertError --err_type ValidationError --err_property name --err_message "Invalid value 'jboss_*'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="jboss_*"
+assertError --err_type ValidationError --err_property olddir --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" olddir=""
+assertError --err_type ValidationError --err_property path --err_message "Value \"/var/log/cobber/*.log, /var/log/libvirtd/*.log\" is not a valid path." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/var/log/cobber/*.log, /var/log/libvirtd/*.log" name="log"
+assertError --err_type ValidationError --err_property postrotate --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" postrotate=""
+assertError --err_type ValidationError --err_property prerotate --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" prerotate=""
+assertError --err_type ValidationError --err_property rotate --err_message "Invalid value 'weekly'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" rotate="weekly"
+assertError --err_type ValidationError --err_property rotate_every --err_message "Invalid value '20141023'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" rotate_every="20141023"
+assertError --err_type ValidationError --err_property sharedscripts --err_message "Invalid value 'True'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" sharedscripts="True"
+assertError --err_type ValidationError --err_property sharedscripts --err_message "Invalid value 'False'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" sharedscripts="False"
+assertError --err_type ValidationError --err_property shred --err_message "Invalid value 'True'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" shred="True"
+assertError --err_type ValidationError --err_property shredcycles --err_message "Invalid value 'false'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" shredcycles="false"
+assertError --err_type ValidationError --err_property size --err_message "Invalid value '1bytes'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" size="1bytes"
+assertError --err_type ValidationError --err_property start --err_message "Invalid value 'true'." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" start="true"
+assertError --err_type ValidationError --err_property uncompresscmd --err_message "Invalid value ''." \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" uncompresscmd=""
+
+#Validate that non-existing properties are rejected
+assertError --err_type PropertyNotAllowedError --err_message "\"require\" is not an allowed property of logrotate-rule" \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log" require="/deployment/d1"
+
+#Validate that an error is generated with firstaction wrapped in double quotes and containing unescaped double quotes
+assertError --err_message "argument -o/--options: invalid option : ['file']" \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o name="logtest2" path="var/log/jboss.log" \
+firstaction="/usr/sbin/svcadm refresh svc:/system/syslog-ng:default logger -p user.info -t logrotate "log file rotated" \
+logger -p mail.info -t logrotate "log file rotated""
+
+#Validate that an error is generated with lastaction wrapped in double quotes and containing unescaped double quotes
+assertError --err_message "argument -o/--options: invalid option : ['file']" \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o name="logtest2" path="var/log/jboss.log" \
+lastaction="/usr/sbin/svcadm refresh svc:/system/syslog-ng:default logger -p user.info -t logrotate "log file rotated" \
+logger -p mail.info -t logrotate "log file rotated""
+
+#Validate that an error is generated with prerotate wrapped in double quotes and containing unescaped double quotes
+assertError --err_message "argument -o/--options: invalid option : ['file']" \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o name="logtest2" path="var/log/jboss.log"\
+prerotate="/usr/sbin/svcadm refresh svc:/system/syslog-ng:default logger -p user.info -t logrotate "log file rotated" \
+logger -p mail.info -t logrotate "log file rotated""
+
+#Validate that an error is generated with postrotate wrapped in double quotes and containing unescaped double quotes
+assertError --err_message "argument -o/--options: invalid option : ['file']" \
+create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o name="logtest2" path="var/log/jboss.log" postrotate="/usr/sbin/svcadm \
+refresh svc:/system/syslog-ng:default logger -p user.info -t logrotate "log file rotated" logger -p mail.info -t logrotate "log file rotated""
+
+#Validate that name property must be unique per node
+litp create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log"
+litp create -t logrotate-rule -p /ms/configs/logging/rules/rule2 -o path="/tmp/log" name="log"
+litp create -t logrotate-rule -p /ms/configs/logging/rules/rule3 -o path="/tmp/log" name="log"
+
+let __err_1 --err_type ValidationError --err_message 'Create plan failed: The property "name" with value "log" must be unique per node' \
+--err_vpath "/ms/configs/logging/rules/rule1"
+let __err_2 --err_type ValidationError --err_message 'Create plan failed: The property "name" with value "log" must be unique per node' \
+--err_vpath "/ms/configs/logging/rules/rule2"
+let __err_3 --err_type ValidationError --err_message 'Create plan failed: The property "name" with value "log" must be unique per node' \
+--err_vpath "/ms/configs/logging/rules/rule3"
+
+assertError __err_1 __err_2 __err_3 --errors_length 3 create_plan
+
+litp remove -p /ms/configs/logging/rules/rule1
+litp remove -p /ms/configs/logging/rules/rule2
+litp remove -p /ms/configs/logging/rules/rule3
+
+#Validate that mandatory properties (name and path) in logrotate-rule cannot be removed
+litp create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log"
+litp create_plan
+
+assertError --err_type MissingRequiredPropertyError --err_message 'ItemType "logrotate-rule" is required to have a property with name "path"' \
+update -p /ms/configs/logging/rules/rule1 -d path
+assertError --err_type MissingRequiredPropertyError --err_message 'ItemType "logrotate-rule" is required to have a property with name "name"' \
+update -p /ms/configs/logging/rules/rule1 -d name
+
+litp remove -p  /ms/configs/logging/rules/rule1
+
+#Validate that readonly property name in logrotate-rule cannot be updated
+litp create -t logrotate-rule -p /ms/configs/logging/rules/rule1 -o path="/tmp/log" name="log"
+litp create_plan
+litp run_plan
+
+assertError --err_type InvalidRequestError --err_message "Unable to modify readonly property: name" \
+update -p /ms/configs/logging/rules/rule1 -o name="log2"
+
+litp remove -p /ms/configs/logging/rules/rule1

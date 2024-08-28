@@ -1,0 +1,7 @@
+#User not able to remove a rule with nameA in configA and create rule with nameA in configB
+litp create -t logrotate-rule-config -p /ms/configs/logrot1
+litp create -t logrotate-rule -p /ms/configs/logrot1/rules/rule1 -o name=mydemo path="/var/log/foo.log" mailfirst=true maillast=false
+assertError --err_type ValidationError   --err_message 'The properties "mailfirst" and "maillast" can not both be set to true' create -t logrotate-rule -p /ms/configs/logrot1/rules/rule2 -o name=mydemo2 path="/var/log/foo.log" mailfirst=true maillast=true
+litp create -t logrotate-rule -p /ms/configs/logrot1/rules/rule3 -o name=mydemo1 path="/var/log/foo.log" mailfirst=false maillast=false
+
+ 

@@ -1,0 +1,6 @@
+litp create -t logrotate-rule-config -p /ms/configs/logging
+litp create -p /ms/configs/logging/rules/rotate_every_rule1 -t logrotate-rule -o name='time_rule1' path='/tmp/log_test04/log1.log,/tmp/log_test04/log2.log' size='8k' dateext='true' dateformat='-%Y%m%d-%s' compress='true' delaycompress='true' rotate_every='week' create='false' sharedscripts='true' rotate=4 postrotate='/sbin/service rsyslog restart || true' 
+litp create_plan
+assertConfigTask ms1 logrotate::rule ms_logging_rotate_every_rule1 /ms/configs/logging/rules/rotate_every_rule1 rotate='4' name='time_rule1' dateformat='-%Y%m%d-%s' postrotate='/sbin/service rsyslog restart || true' create='false' compress='true' rotate_every='week' dateext='true' delaycompress='true' path='/tmp/log_test04/log1.log /tmp/log_test04/log2.log' sharedscripts='true' size='8k'
+
+ 

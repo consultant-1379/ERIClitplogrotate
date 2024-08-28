@@ -1,0 +1,10 @@
+#Validation incorrectly called when 2 configs present but one is marked "ForRemoval"
+litp create -t logrotate-rule-config -p /ms/configs/logrot1
+litp create -t logrotate-rule -p /ms/configs/logrot1/rules/rule1 -o name=mydemo path="/var/log/foo.log" missingok=true rotate_every=day
+litp create_plan
+litp run_plan 
+
+
+litp create -t logrotate-rule-config -p /ms/configs/logrot2
+litp create -p /ms/configs/logrot2/rules/mqserverTest1 -t logrotate-rule -o path="/var/test/rabbitmqserver.log" name=mydemo2 size=1M rotate=5
+assertError create_plan
